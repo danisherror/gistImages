@@ -1,0 +1,119 @@
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.lotus-wrap{padding:1rem 0;font-family:var(--font-sans)}
+.instructions{font-size:13px;color:var(--color-text-secondary);margin-bottom:1rem;line-height:1.6}
+.center-input-wrap{display:flex;gap:8px;margin-bottom:1.5rem;align-items:center}
+.center-input-wrap input{flex:1;font-size:14px;padding:8px 12px;border:1px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)}
+.center-input-wrap button{padding:8px 16px;font-size:13px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-secondary);color:var(--color-text-primary);cursor:pointer;white-space:nowrap}
+.center-input-wrap button:hover{background:var(--color-background-tertiary)}
+.grid-section{margin-bottom:2rem}
+.grid-label{font-size:12px;color:var(--color-text-secondary);margin-bottom:8px;font-weight:500}
+.lotus-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;max-width:480px}
+.cell{border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-secondary);min-height:64px;display:flex;align-items:center;justify-content:center;padding:6px}
+.cell.center-cell{background:var(--color-background-primary);border:1.5px solid #7F77DD;border-radius:var(--border-radius-md)}
+.cell.center-cell span{font-size:13px;font-weight:500;color:#534AB7;text-align:center;line-height:1.3;word-break:break-word;padding:4px}
+.cell input{width:100%;background:transparent;border:none;outline:none;font-size:12px;color:var(--color-text-primary);text-align:center;resize:none;font-family:var(--font-sans);line-height:1.4}
+.cell input::placeholder{color:var(--color-text-tertiary)}
+.outer-grids{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1rem}
+.outer-grid-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:12px;background:var(--color-background-primary)}
+.outer-grid-title{font-size:12px;font-weight:500;color:#534AB7;margin-bottom:8px;min-height:16px}
+.outer-lotus-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.outer-cell{border:0.5px solid var(--color-border-tertiary);border-radius:6px;background:var(--color-background-secondary);min-height:44px;display:flex;align-items:center;justify-content:center;padding:4px}
+.outer-cell.center{background:#EEEDFE;border:1px solid #AFA9EC}
+.outer-cell.center span{font-size:11px;font-weight:500;color:#3C3489;text-align:center;line-height:1.3;word-break:break-word}
+.outer-cell input{width:100%;background:transparent;border:none;outline:none;font-size:11px;color:var(--color-text-primary);text-align:center;font-family:var(--font-sans);line-height:1.4}
+.outer-cell input::placeholder{color:var(--color-text-tertiary)}
+.section-title{font-size:15px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px}
+.divider{border:none;border-top:0.5px solid var(--color-border-tertiary);margin:1.5rem 0}
+.expand-btn{font-size:12px;color:#534AB7;background:none;border:none;cursor:pointer;padding:0;margin-top:8px}
+.expand-btn:hover{text-decoration:underline}
+</style>
+<div class="lotus-wrap">
+  <h2 class="sr-only">Interactive Lotus Blossom brainstorming diagram</h2>
+  <p class="instructions">Type your central topic or problem below, then fill in 8 related sub-ideas around it. Each sub-idea becomes the seed of its own petal grid below.</p>
+
+  <div class="center-input-wrap">
+    <input id="topic-input" type="text" placeholder="e.g. How might we improve team communication?" maxlength="60" oninput="updateCenter(this.value)"/>
+    <button onclick="sendPrompt('Give me 8 sub-topics for a Lotus Blossom on: ' + document.getElementById(\'topic-input\').value)">Suggest ideas ↗</button>
+  </div>
+
+  <div class="grid-section">
+    <p class="section-title">Core grid</p>
+    <p class="grid-label">Fill the 8 surrounding cells with related sub-ideas</p>
+    <div class="lotus-grid" id="core-grid">
+      <div class="cell" id="c0"><input type="text" placeholder="A" maxlength="30" oninput="syncPetal(0,this.value)"/></div>
+      <div class="cell" id="c1"><input type="text" placeholder="B" maxlength="30" oninput="syncPetal(1,this.value)"/></div>
+      <div class="cell" id="c2"><input type="text" placeholder="C" maxlength="30" oninput="syncPetal(2,this.value)"/></div>
+      <div class="cell" id="c3"><input type="text" placeholder="D" maxlength="30" oninput="syncPetal(3,this.value)"/></div>
+      <div class="cell center-cell"><span id="center-label">Your topic</span></div>
+      <div class="cell" id="c4"><input type="text" placeholder="E" maxlength="30" oninput="syncPetal(4,this.value)"/></div>
+      <div class="cell" id="c5"><input type="text" placeholder="F" maxlength="30" oninput="syncPetal(5,this.value)"/></div>
+      <div class="cell" id="c6"><input type="text" placeholder="G" maxlength="30" oninput="syncPetal(6,this.value)"/></div>
+      <div class="cell" id="c7"><input type="text" placeholder="H" maxlength="30" oninput="syncPetal(7,this.value)"/></div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <div class="grid-section">
+    <p class="section-title">Petal grids</p>
+    <p class="grid-label">Each sub-idea expands into its own 3×3 — add 8 deeper ideas around each one</p>
+    <div class="outer-grids" id="outer-grids"></div>
+  </div>
+</div>
+
+<script>
+const labels = ['A','B','C','D','E','F','G','H'];
+const petalTitles = Array(8).fill('');
+
+function updateCenter(val) {
+  document.getElementById('center-label').textContent = val || 'Your topic';
+}
+
+function syncPetal(i, val) {
+  petalTitles[i] = val;
+  const el = document.getElementById('petal-title-' + i);
+  if (el) el.textContent = val || labels[i];
+  const centerSpan = document.getElementById('petal-center-' + i);
+  if (centerSpan) centerSpan.textContent = val || labels[i];
+}
+
+function buildOuterGrids() {
+  const container = document.getElementById('outer-grids');
+  container.innerHTML = '';
+  for (let i = 0; i < 8; i++) {
+    const card = document.createElement('div');
+    card.className = 'outer-grid-card';
+    const title = document.createElement('div');
+    title.className = 'outer-grid-title';
+    title.id = 'petal-title-' + i;
+    title.textContent = petalTitles[i] || labels[i];
+    card.appendChild(title);
+    const grid = document.createElement('div');
+    grid.className = 'outer-lotus-grid';
+    const positions = [0,1,2,3,'C',4,5,6,7];
+    positions.forEach((pos) => {
+      const cell = document.createElement('div');
+      if (pos === 'C') {
+        cell.className = 'outer-cell center';
+        const sp = document.createElement('span');
+        sp.id = 'petal-center-' + i;
+        sp.textContent = petalTitles[i] || labels[i];
+        cell.appendChild(sp);
+      } else {
+        cell.className = 'outer-cell';
+        const inp = document.createElement('input');
+        inp.type = 'text';
+        inp.placeholder = '...';
+        inp.maxLength = 30;
+        cell.appendChild(inp);
+      }
+      grid.appendChild(cell);
+    });
+    card.appendChild(grid);
+    container.appendChild(card);
+  }
+}
+
+buildOuterGrids();
+</script>
