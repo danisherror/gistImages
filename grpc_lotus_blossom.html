@@ -1,0 +1,177 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.lotus-wrap{padding:1rem 0;font-family:var(--font-sans)}
+.grid-title{font-size:13px;color:var(--color-text-secondary);margin-bottom:14px;text-align:center}
+.lotus-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;width:100%}
+.cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;text-align:center;border-radius:6px;cursor:pointer;transition:opacity .15s,transform .15s;padding:3px;position:relative}
+.cell:hover{transform:scale(1.06);z-index:2}
+.cell-text{font-size:10px;line-height:1.25;font-weight:500;word-break:break-word;hyphens:auto}
+.cell-sub{font-size:9px;line-height:1.2;font-weight:400;word-break:break-word;hyphens:auto}
+
+.core{background:#7F77DD;color:#EEEDFE;border-radius:8px;font-size:11px;font-weight:500}
+.empty{background:var(--color-background-secondary);opacity:0.18;cursor:default}
+.empty:hover{transform:none}
+
+.p1{background:#CECBF6;color:#26215C}
+.p2{background:#9FE1CB;color:#04342C}
+.p3{background:#B5D4F4;color:#042C53}
+.p4{background:#FAC775;color:#412402}
+.p5{background:#F5C4B3;color:#4A1B0C}
+.p6{background:#C0DD97;color:#173404}
+.p7{background:#F4C0D1;color:#4B1528}
+.p8{background:#D3D1C7;color:#2C2C2A}
+
+.p1s{background:#EEEDFE;color:#3C3489}
+.p2s{background:#E1F5EE;color:#085041}
+.p3s{background:#E6F1FB;color:#0C447C}
+.p4s{background:#FAEEDA;color:#633806}
+.p5s{background:#FAECE7;color:#712B13}
+.p6s{background:#EAF3DE;color:#27500A}
+.p7s{background:#FBEAF0;color:#72243E}
+.p8s{background:#F1EFE8;color:#444441}
+
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;justify-content:center}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--color-text-secondary);cursor:pointer;padding:3px 8px;border-radius:4px;transition:background .15s}
+.legend-item:hover{background:var(--color-background-secondary)}
+.legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.info-bar{margin-top:12px;padding:10px 14px;background:var(--color-background-secondary);border-radius:8px;border:0.5px solid var(--color-border-tertiary);min-height:42px;font-size:12px;color:var(--color-text-secondary);line-height:1.5;transition:all .2s}
+.info-bar strong{color:var(--color-text-primary);font-weight:500}
+</style>
+
+<div class="lotus-wrap">
+<h2 class="sr-only">Lotus Blossom diagram for gRPC learning roadmap — HPE Juniper Apstra</h2>
+<div class="grid-title">gRPC Mastery — Lotus Blossom · click any cell to explore</div>
+
+<div class="lotus-grid" id="lg"></div>
+
+<div class="legend" id="legend"></div>
+<div class="info-bar" id="info">Tap any colored cell to see details about that topic.</div>
+</div>
+
+<script>
+const P = [
+  {id:1,cls:'p1',scls:'p1s',label:'Foundations',desc:'Core gRPC concepts, HTTP/2, Protobuf, and the 4 RPC patterns',
+   subs:['RPC paradigm','Protobuf basics','HTTP/2 framing','Unary RPC','Server streaming','Client streaming','Bidi streaming','Channel & stub']},
+  {id:2,cls:'p2',scls:'p2s',label:'Build it',desc:'Hands-on project — network device service in Python & Go',
+   subs:['protoc setup','Python grpcio','Go grpc gen','Device .proto','Error codes','Status API','Metadata','Deadlines']},
+  {id:3,cls:'p3',scls:'p3s',label:'gNMI / gNOI',desc:'The OpenConfig gRPC protocols used by Apstra to talk to Juniper devices',
+   subs:['Capabilities RPC','Get RPC','Set RPC','Subscribe RPC','gNOI ping','gNOI reboot','Path encoding','YANG paths']},
+  {id:4,cls:'p4',scls:'p4s',label:'OpenConfig',desc:'YANG data models that define what you can read/write on a Juniper device',
+   subs:['YANG basics','OC interfaces','OC BGP','OC VLAN','OC LLDP','Junos augments','ygot library','Path struct']},
+  {id:5,cls:'p5',scls:'p5s',label:'Security',desc:'TLS, mTLS, and token auth for secure device management',
+   subs:['TLS channels','mTLS setup','Channel creds','Call creds','JWT tokens','Cert rotation','Interceptor auth','Device identity']},
+  {id:6,cls:'p6',scls:'p6s',label:'Scale & ops',desc:'Streaming at scale, observability, and production operations',
+   subs:['Flow control','Keepalives','Backpressure','Reconnection','OpenTelemetry','Prometheus','Structured logs','Load balancing']},
+  {id:7,cls:'p7',scls:'p7s',label:'Advanced',desc:'Schema evolution, gRPC-Web, Kubernetes deployment',
+   subs:['Field compat','Reserved nums','API versioning','gRPC-Web','Envoy proxy','K8s headless','Health probes','Istio mesh']},
+  {id:8,cls:'p8',scls:'p8s',label:'Testing',desc:'Tools and strategies for testing gRPC services reliably',
+   subs:['grpcurl CLI','Evans REPL','Unit mocks','Integration','Contract test','Chaos inject','grpc-gateway','buf linter']},
+];
+
+const CORE = {label:'gRPC\nApstra',desc:'Central theme: mastering gRPC for the HPE-Juniper Apstra Devices team — from architecture to gNMI device management.'};
+
+const positions = [
+  [0,0],[1,0],[2,0],
+  [0,1],[1,1],[2,1],
+  [0,2],[1,2],[2,2],
+];
+
+const petalsPos = [
+  {r:0,c:3},{r:0,c:4},{r:0,c:5},
+  {r:3,c:3},{r:4,c:4},{r:5,c:5},
+  {r:6,c:3},{r:6,c:4},{r:6,c:5},
+  {r:3,c:0},{r:4,c:0},{r:5,c:0},
+  {r:3,c:6},{r:4,c:6},{r:5,c:6},
+  {r:0,c:6},{r:0,c:7},{r:0,c:8},
+  {r:6,c:0},{r:6,c:1},{r:6,c:2},
+  {r:6,c:6},{r:6,c:7},{r:6,c:8},
+];
+
+const layout = [];
+for(let r=0;r<9;r++){
+  for(let c=0;c<9;c++){
+    layout.push({r,c,type:'empty',content:''});
+  }
+}
+
+function setCell(r,c,type,content,pid,sid){
+  const idx=r*9+c;
+  layout[idx]={r,c,type,content,pid,sid};
+}
+
+setCell(4,4,'core',CORE);
+
+const petalCenters = [
+  {r:1,c:1,pid:0},{r:1,c:4,pid:1},{r:1,c:7,pid:2},
+  {r:4,c:1,pid:3},                 {r:4,c:7,pid:4},
+  {r:7,c:1,pid:5},{r:7,c:4,pid:6},{r:7,c:7,pid:7},
+];
+
+const subOffsets = [
+  [-1,-1],[-1,0],[-1,1],
+  [0,-1],         [0,1],
+  [1,-1],[1,0],[1,1]
+];
+
+petalCenters.forEach(({r,c,pid})=>{
+  const p=P[pid];
+  setCell(r,c,'petal',p,pid);
+  p.subs.forEach((s,i)=>{
+    const [dr,dc]=subOffsets[i];
+    setCell(r+dr,c+dc,'sub',s,pid,i);
+  });
+});
+
+const grid=document.getElementById('lg');
+const info=document.getElementById('info');
+
+layout.forEach(({type,content,pid,sid},i)=>{
+  const div=document.createElement('div');
+  div.className='cell';
+  if(type==='empty'){
+    div.classList.add('empty');
+  } else if(type==='core'){
+    div.classList.add('core');
+    div.innerHTML=`<span class="cell-text" style="font-size:11px;color:#EEEDFE">${content.label}</span>`;
+    div.onclick=()=>showInfo(null,'core',content.label,content.desc);
+  } else if(type==='petal'){
+    const p=P[pid];
+    div.classList.add(p.cls);
+    div.innerHTML=`<span class="cell-text">${p.label}</span>`;
+    div.onclick=()=>showInfo(pid,'petal',p.label,p.desc);
+  } else if(type==='sub'){
+    const p=P[pid];
+    div.classList.add(p.scls);
+    div.innerHTML=`<span class="cell-sub">${content}</span>`;
+    div.onclick=()=>showInfo(pid,'sub',content,`Part of "${p.label}": ${content} — click to go deeper.`);
+  }
+  grid.appendChild(div);
+});
+
+const legendEl=document.getElementById('legend');
+P.forEach((p,i)=>{
+  const item=document.createElement('div');
+  item.className='legend-item';
+  item.innerHTML=`<div class="legend-dot" style="background:${getDotColor(p.cls)}"></div><span>${p.label}</span>`;
+  item.onclick=()=>showInfo(i,'petal',p.label,p.desc);
+  legendEl.appendChild(item);
+});
+
+function getDotColor(cls){
+  const map={p1:'#7F77DD',p2:'#1D9E75',p3:'#378ADD',p4:'#BA7517',p5:'#D85A30',p6:'#639922',p7:'#D4537E',p8:'#888780'};
+  return map[cls]||'#888';
+}
+
+function showInfo(pid,type,label,desc){
+  if(type==='sub'&&pid!==null){
+    const p=P[pid];
+    info.innerHTML=`<strong>${label}</strong> <span style="color:var(--color-text-tertiary);font-size:11px">· ${p.label}</span><br>${desc} <span style="color:var(--color-text-info);cursor:pointer" onclick="sendPrompt('Deep dive: ${label} in gRPC for Apstra — explain with examples')">Ask Claude ↗</span>`;
+  } else if(type==='petal'&&pid!==null){
+    const p=P[pid];
+    info.innerHTML=`<strong>${label}</strong><br>${desc} <span style="color:var(--color-text-info);cursor:pointer" onclick="sendPrompt('Teach me everything about ${label} in gRPC for HPE-Juniper Apstra')">Explore this phase ↗</span>`;
+  } else {
+    info.innerHTML=`<strong>${label}</strong><br>${desc}`;
+  }
+}
+</script>
