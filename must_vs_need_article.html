@@ -1,0 +1,501 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=DM+Sans:wght@300;400;500&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .root {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--color-text-primary);
+    padding: 2rem 1.5rem 3rem;
+    max-width: 720px;
+  }
+
+  .hero {
+    margin-bottom: 2.5rem;
+    border-left: 3px solid var(--color-border-primary);
+    padding-left: 1.25rem;
+  }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--color-text-secondary);
+  }
+
+  .hero-sub {
+    font-size: 15px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  .intro-box {
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-lg);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2.5rem;
+    border: 0.5px solid var(--color-border-tertiary);
+  }
+
+  .intro-box p {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--color-text-secondary);
+  }
+
+  .intro-box strong {
+    color: var(--color-text-primary);
+    font-weight: 500;
+  }
+
+  .legend {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--color-text-secondary);
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-must { background: #3C3489; }
+  .dot-need { background: #0F6E56; }
+
+  .section {
+    margin-bottom: 1.5rem;
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .section:hover { border-color: var(--color-border-secondary); }
+  .section.open { border-color: var(--color-border-primary); }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 1rem 1.25rem;
+    background: var(--color-background-primary);
+    user-select: none;
+  }
+
+  .section-icon {
+    font-size: 20px;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--border-radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .section-meta { flex: 1; }
+
+  .section-title {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+
+  .section-desc {
+    font-size: 12px;
+    color: var(--color-text-tertiary);
+  }
+
+  .chevron {
+    font-size: 16px;
+    color: var(--color-text-tertiary);
+    transition: transform 0.25s;
+  }
+
+  .section.open .chevron { transform: rotate(180deg); }
+
+  .section-body {
+    display: none;
+    padding: 0 1.25rem 1.25rem;
+    background: var(--color-background-primary);
+  }
+
+  .section.open .section-body { display: block; }
+
+  .divider {
+    height: 0.5px;
+    background: var(--color-border-tertiary);
+    margin-bottom: 1.25rem;
+  }
+
+  .items-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .col-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid;
+  }
+
+  .col-label.must { color: #3C3489; border-color: #3C3489; }
+  .col-label.need { color: #0F6E56; border-color: #0F6E56; }
+
+  .item {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+    padding: 5px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .item-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    margin-top: 7px;
+    flex-shrink: 0;
+  }
+
+  .item-dot.must { background: #534AB7; }
+  .item-dot.need { background: #1D9E75; }
+
+  .key-insight {
+    margin-top: 1rem;
+    padding: 10px 14px;
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-md);
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    border-left: 2.5px solid var(--color-border-primary);
+  }
+
+  .key-insight strong { color: var(--color-text-primary); font-weight: 500; }
+
+  .closing {
+    margin-top: 2.5rem;
+    padding: 1.5rem;
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-lg);
+    border: 0.5px solid var(--color-border-tertiary);
+    text-align: center;
+  }
+
+  .closing-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .closing-text {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    max-width: 480px;
+    margin: 0 auto 1rem;
+  }
+
+  .ask-btn {
+    background: transparent;
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: var(--border-radius-md);
+    padding: 8px 18px;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--color-text-primary);
+    font-family: inherit;
+  }
+
+  .ask-btn:hover { background: var(--color-background-secondary); }
+</style>
+
+<div class="root">
+  <h2 class="sr-only">Must vs Need — A guide across all areas of life to help you prioritize clearly and grow stronger</h2>
+
+  <div class="hero">
+    <p class="hero-eyebrow">Personal Development Framework</p>
+    <h1 class="hero-title">Must vs <em>Need</em></h1>
+    <p class="hero-sub">What you truly must do — and what only feels urgent. A guide across every area of life to help you live with clarity, strength, and intention.</p>
+  </div>
+
+  <div class="intro-box">
+    <p><strong>Must</strong> = non-negotiable. These are actions tied to your values, growth, health, and responsibilities. Skipping them has real consequences.<br><br>
+    <strong>Need</strong> = felt urgency, but often negotiable. These feel pressing — driven by habit, emotion, social pressure, or comfort-seeking. They can be delayed, deprioritized, or dropped.</p>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="dot dot-must"></div> Must — non-negotiable</div>
+    <div class="legend-item"><div class="dot dot-need"></div> Need — felt, but flexible</div>
+  </div>
+
+  <div id="accordion"></div>
+
+  <div class="closing">
+    <h3 class="closing-title">The core question to ask yourself</h3>
+    <p class="closing-text">Before acting on any urgency, pause and ask: <em>"If I don't do this, what actually changes — for real?"</em> If the honest answer is "nothing serious," it's a need. If skipping it costs you health, trust, integrity, or growth — it's a must.</p>
+    <button class="ask-btn" onclick="sendPrompt('Help me apply the must vs need framework to a specific situation in my life ↗')">Apply this to my life ↗</button>
+  </div>
+</div>
+
+<script>
+const categories = [
+  {
+    icon: "ti-user",
+    color: "#EEEDFE",
+    iconColor: "#534AB7",
+    title: "Personal Development",
+    desc: "Building the person you want to become",
+    musts: [
+      "Sleep 7–8 hours consistently",
+      "Move your body daily",
+      "Face your fears, even slowly",
+      "Reflect on your actions and patterns",
+      "Learn something that challenges you"
+    ],
+    needs: [
+      "Read every trending book",
+      "Follow every productivity hack",
+      "Have a perfect morning routine",
+      "Attend every seminar or workshop",
+      "Track every metric about yourself"
+    ],
+    insight: "<strong>Key distinction:</strong> You must build discipline in the fundamentals. You don't need to optimize everything — that's just productive procrastination."
+  },
+  {
+    icon: "ti-heart",
+    color: "#FBEAF0",
+    iconColor: "#993556",
+    title: "Relationships",
+    desc: "Family, friends, romantic partners",
+    musts: [
+      "Show up when it truly matters",
+      "Communicate honestly, even when hard",
+      "Respect boundaries — yours and theirs",
+      "Forgive (for your own peace)",
+      "Be present, not just nearby"
+    ],
+    needs: [
+      "Respond to every message instantly",
+      "Agree with everyone to avoid conflict",
+      "Maintain every friendship from the past",
+      "Be available 24/7 for others",
+      "Share everything you feel in the moment"
+    ],
+    insight: "<strong>Key distinction:</strong> You must invest in depth. You don't need to maintain breadth at the cost of your energy or identity."
+  },
+  {
+    icon: "ti-briefcase",
+    color: "#E1F5EE",
+    iconColor: "#0F6E56",
+    title: "Work & Career",
+    desc: "Professional growth and responsibility",
+    musts: [
+      "Deliver what you committed to",
+      "Build a skill that compounds over time",
+      "Take ownership of your mistakes",
+      "Know when to say no",
+      "Invest in your professional reputation"
+    ],
+    needs: [
+      "Impress everyone at every meeting",
+      "Say yes to every opportunity",
+      "Work late to signal dedication",
+      "Chase every promotion immediately",
+      "Compete with every colleague"
+    ],
+    insight: "<strong>Key distinction:</strong> You must be reliable and grow steadily. You don't need to perform busyness or sacrifice health for status."
+  },
+  {
+    icon: "ti-mood-happy",
+    color: "#FAEEDA",
+    iconColor: "#854F0B",
+    title: "Mental Health",
+    desc: "Inner stability and emotional resilience",
+    musts: [
+      "Process difficult emotions, don't bury them",
+      "Seek help when you're truly struggling",
+      "Set limits with energy-draining people",
+      "Build a consistent stress outlet",
+      "Know your triggers and patterns"
+    ],
+    needs: [
+      "Be happy all the time",
+      "Fix every flaw at once",
+      "Have zero anxiety or worry ever",
+      "Get everyone's approval to feel okay",
+      "Suppress emotions to appear strong"
+    ],
+    insight: "<strong>Key distinction:</strong> You must tend to your inner world. You don't need to perform emotional perfection for yourself or others."
+  },
+  {
+    icon: "ti-coins",
+    color: "#EAF3DE",
+    iconColor: "#3B6D11",
+    title: "Finances",
+    desc: "Money, security, and freedom",
+    musts: [
+      "Spend less than you earn",
+      "Build an emergency fund first",
+      "Understand where your money goes",
+      "Invest — even small amounts, consistently",
+      "Pay off high-interest debt aggressively"
+    ],
+    needs: [
+      "Have the latest phone or gadget",
+      "Keep up with others' lifestyle",
+      "Buy things to feel better temporarily",
+      "Chase every investment trend",
+      "Achieve wealth by a specific age"
+    ],
+    insight: "<strong>Key distinction:</strong> You must build a floor of security. You don't need to build a ceiling of status."
+  },
+  {
+    icon: "ti-activity",
+    color: "#FCEBEB",
+    iconColor: "#A32D2D",
+    title: "Health & Body",
+    desc: "Physical foundation of everything else",
+    musts: [
+      "Eat mostly real, whole food",
+      "Stay physically active in some form",
+      "Get regular health checkups",
+      "Manage chronic stress (it's physical)",
+      "Limit habits that slowly damage you"
+    ],
+    needs: [
+      "Have a perfect diet with zero cheat meals",
+      "Hit the gym every single day",
+      "Follow the latest nutrition trend",
+      "Have an ideal body by a set date",
+      "Eliminate all 'bad' food forever"
+    ],
+    insight: "<strong>Key distinction:</strong> You must be consistent with the basics. You don't need to be extreme — extremism often kills consistency."
+  },
+  {
+    icon: "ti-users",
+    color: "#E6F1FB",
+    iconColor: "#185FA5",
+    title: "Social Life",
+    desc: "Community, belonging, and contribution",
+    musts: [
+      "Maintain at least a few deep connections",
+      "Contribute to something beyond yourself",
+      "Be honest about who you are socially",
+      "Know when you need solitude",
+      "Give your time to people who matter"
+    ],
+    needs: [
+      "Attend every event or gathering",
+      "Have a large social circle",
+      "Always be the life of the party",
+      "Post on social media to stay relevant",
+      "Be liked by everyone you meet"
+    ],
+    insight: "<strong>Key distinction:</strong> You must nourish a few real connections. You don't need social validation from the crowd to feel whole."
+  },
+  {
+    icon: "ti-seedling",
+    color: "#E1F5EE",
+    iconColor: "#085041",
+    title: "Purpose & Meaning",
+    desc: "Living intentionally, not just busily",
+    musts: [
+      "Know your core values and live by them",
+      "Do work that connects to something meaningful",
+      "Review your life direction periodically",
+      "Make time for things that make you feel alive",
+      "Be honest about what you actually want"
+    ],
+    needs: [
+      "Have your life purpose fully figured out",
+      "Follow your passion in every moment",
+      "Have a grand legacy planned right now",
+      "Find meaning in every single task",
+      "Achieve certainty before moving forward"
+    ],
+    insight: "<strong>Key distinction:</strong> You must live by your values. You don't need to have a perfectly clear purpose before starting — clarity comes through action."
+  }
+];
+
+const accordion = document.getElementById('accordion');
+
+categories.forEach((cat, i) => {
+  const section = document.createElement('div');
+  section.className = 'section';
+  if (i === 0) section.classList.add('open');
+
+  section.innerHTML = `
+    <div class="section-header">
+      <div class="section-icon" style="background:${cat.color}">
+        <i class="ti ${cat.icon}" style="font-size:18px;color:${cat.iconColor}" aria-hidden="true"></i>
+      </div>
+      <div class="section-meta">
+        <div class="section-title">${cat.title}</div>
+        <div class="section-desc">${cat.desc}</div>
+      </div>
+      <i class="ti ti-chevron-down chevron" aria-hidden="true"></i>
+    </div>
+    <div class="section-body">
+      <div class="divider"></div>
+      <div class="items-grid">
+        <div>
+          <div class="col-label must">Must do</div>
+          ${cat.musts.map(m => `<div class="item"><div class="item-dot must"></div><span>${m}</span></div>`).join('')}
+        </div>
+        <div>
+          <div class="col-label need">Just a need</div>
+          ${cat.needs.map(n => `<div class="item"><div class="item-dot need"></div><span>${n}</span></div>`).join('')}
+        </div>
+      </div>
+      <div class="key-insight">${cat.insight}</div>
+    </div>
+  `;
+
+  section.querySelector('.section-header').addEventListener('click', () => {
+    const isOpen = section.classList.contains('open');
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('open'));
+    if (!isOpen) section.classList.add('open');
+  });
+
+  accordion.appendChild(section);
+});
+</script>
